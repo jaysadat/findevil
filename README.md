@@ -77,6 +77,9 @@ ignored, and write the catalog into `artifacts/`:
 
 Knowledge catalogs preserve source hashes and scope for operator references.
 They are guidance for plans and next actions, not evidence support for findings.
+Use `index-knowledge` and `query-knowledge` after cataloging when a bounded
+local guidance search is useful; query hits stay labeled separately from case
+evidence outputs.
 
 The first constrained local tool is a read-only evidence hash operation:
 

@@ -38,7 +38,22 @@ The catalog writes:
   SHA-256 values.
 - `knowledge-catalog.md` with the same boundary and an operator-readable table.
 
-This first step intentionally inventories approved local references without
-adding embeddings or retrieval dependencies. A later retrieval layer should
-consume the catalog boundary and keep generated guidance labeled separately
-from evidence-backed reporting.
+## Guidance Index
+
+Build a bounded lexical index from the catalog, then query guidance hits:
+
+```powershell
+.\.venv\Scripts\findevil-sift.exe index-knowledge `
+  '.\artifacts\knowledge-catalog\knowledge-catalog.json' `
+  --output-dir '.\knowledge\indexes\operator-dfir-guidance'
+.\.venv\Scripts\findevil-sift.exe query-knowledge `
+  '.\knowledge\indexes\operator-dfir-guidance\knowledge-index.json' `
+  --query 'memory process persistence next actions' `
+  --output-dir '.\artifacts\knowledge-guidance'
+```
+
+Indexing re-checks each cataloged source hash before PDF, text, or Markdown
+extraction. The index caps extracted characters per source and returns bounded
+lexical chunks with source label, relative path, location, chunk ID, and source
+SHA-256. It is a local guidance retrieval layer rather than an evidence lane:
+the query output repeats the boundary and cannot promote a case claim.

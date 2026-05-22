@@ -21,7 +21,9 @@ workspace.
 Operator PDF and runbook references can be cataloged through a separate
 knowledge manifest described in `docs/knowledge-corpus.md`. Those sources are
 guidance inputs for future plan or next-action assistance, not evidence inputs
-for reports or claim promotion.
+for reports or claim promotion. A bounded lexical index can consume the
+catalog, re-check source hashes before extraction, and return labeled guidance
+chunks for analyst review without entering claim promotion.
 
 ## Current Capability
 

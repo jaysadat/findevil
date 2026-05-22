@@ -19,7 +19,12 @@ from .case_plans import (
     write_discovered_case_plan,
 )
 from .correlate import correlate_case_summaries, write_case_correlation
-from .knowledge import catalog_knowledge, load_and_validate_knowledge_manifest
+from .knowledge import (
+    catalog_knowledge,
+    index_knowledge,
+    load_and_validate_knowledge_manifest,
+    query_knowledge,
+)
 from .run_manifest import signing_key_from_environment, verify_run_manifest
 from .tools import hash_evidence
 from .vmware import (
@@ -213,6 +218,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     catalog_knowledge_parser.add_argument("manifest", type=Path)
     catalog_knowledge_parser.add_argument("--output-dir", type=Path, required=True)
 
+    index_knowledge_parser = subparsers.add_parser(
+        "index-knowledge",
+        help="Build a bounded lexical guidance index from a cataloged local reference corpus.",
+    )
+    index_knowledge_parser.add_argument("catalog", type=Path)
+    index_knowledge_parser.add_argument("--output-dir", type=Path, required=True)
+
+    query_knowledge_parser = subparsers.add_parser(
+        "query-knowledge",
+        help="Query a local guidance index without treating reference hits as evidence.",
+    )
+    query_knowledge_parser.add_argument("index", type=Path)
+    query_knowledge_parser.add_argument("--query", required=True)
+    query_knowledge_parser.add_argument("--output-dir", type=Path, required=True)
+    query_knowledge_parser.add_argument("--limit", type=int, default=5)
+
     verify_run_manifest_parser = subparsers.add_parser(
         "verify-run-manifest",
         help="Verify workflow bundle hashes and an optional environment-keyed manifest signature.",
@@ -398,6 +419,19 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0 if result["passed"] else 1
     if args.command == "catalog-knowledge":
         result = catalog_knowledge(args.manifest, args.output_dir)
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
+    if args.command == "index-knowledge":
+        result = index_knowledge(args.catalog, args.output_dir)
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
+    if args.command == "query-knowledge":
+        result = query_knowledge(
+            args.index,
+            args.query,
+            args.output_dir,
+            limit=args.limit,
+        )
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
     if args.command == "verify-run-manifest":

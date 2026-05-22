@@ -12,6 +12,8 @@ unbounded guest shell:
   run-manifest signing key before guest work begins.
 - Optional reference corpora are cataloged as guidance sources with hashes and
   a strict reporting boundary outside case evidence.
+- Cataloged operator references can be indexed and queried through bounded
+  lexical guidance retrieval that preserves source hashes and locations.
 - Case plans are validated before VMware guest work begins.
 - Each lane has a narrow operation set and produces structured JSON plus
   preserved raw outputs.
@@ -59,8 +61,8 @@ dossier for quality control against a known case profile.
 
 - Extend operator policy from output-root and signing controls into retention
   and profile-selection policy.
-- Build retrieval on top of cataloged operator references only after guidance
-  output stays visibly separate from evidence-backed claims.
+- Add operator-policy selection and evaluation fixtures for guidance indexes
+  before using retrieval to draft case plans or next actions.
 - Move run-manifest signing from shared workstation keys to a verifiable
   asymmetric export-signing profile.
 - Add memory-forensics plugins and broader disk extraction only when preserved
