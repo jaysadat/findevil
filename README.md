@@ -52,6 +52,9 @@ case without making those facts the default product behavior.
 Explicit CLI VMX overrides win over `SIFT_VMX_PATH`, environment VM settings
 win over the host config file, and the config file wins over built-in VMware
 defaults. Guest passwords are intentionally rejected from host config files.
+The same host config can set workflow operator policy: allowed output roots and
+whether `run-case` must have `FINDEVIL_RUN_MANIFEST_KEY` before guest work
+starts. Relative allowed roots resolve from the host config directory.
 
 Run the local audit primitive tests with:
 

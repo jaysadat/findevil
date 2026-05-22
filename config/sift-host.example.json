@@ -3,5 +3,11 @@
     "vmx_path": "C:\\VMs\\SIFT\\SIFT.vmx",
     "guest_user": "sansforensics",
     "vmrun_path": "C:\\Program Files (x86)\\VMware\\VMware Workstation\\vmrun.exe"
+  },
+  "operator_policy": {
+    "allowed_output_roots": [
+      "..\\artifacts"
+    ],
+    "require_signed_run_manifests": false
   }
 }

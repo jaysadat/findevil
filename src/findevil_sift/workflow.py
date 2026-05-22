@@ -16,6 +16,7 @@ from .benchmarks import (
 )
 from .case_plans import lane_artifacts, load_and_validate_case_plan, resolve_plan_reference
 from .claim_accuracy import write_claim_accuracy
+from .config import enforce_workflow_policy
 from .correlate import correlate_case_summaries, write_case_correlation
 from .scenario import align_case_profile, write_case_dossier
 from .reports import write_claim_ledger, write_executive_report
@@ -59,6 +60,10 @@ def run_case_workflow(
     if max_attempts < 1:
         raise ValueError("max_attempts must be at least 1")
 
+    enforce_workflow_policy(
+        output_root,
+        signing_key_present=signing_key_from_environment() is not None,
+    )
     output_root.mkdir(parents=True, exist_ok=True)
     plan_path = case_plan_path.resolve(strict=True)
     plan, plan_validation = load_and_validate_case_plan(plan_path)

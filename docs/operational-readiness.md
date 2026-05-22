@@ -8,6 +8,8 @@ unbounded guest shell:
 - Guest evidence paths must live below `/cases`.
 - Shareable host VM settings can live in a JSON host config while guest secrets
   remain environment-provided.
+- Operator policy can constrain plan-driven workflow output roots and require a
+  run-manifest signing key before guest work begins.
 - Optional reference corpora are cataloged as guidance sources with hashes and
   a strict reporting boundary outside case evidence.
 - Case plans are validated before VMware guest work begins.
@@ -55,8 +57,8 @@ dossier for quality control against a known case profile.
 
 ## Next Hardening
 
-- Extend configuration from host VM settings into output retention and profile
-  selection policy.
+- Extend operator policy from output-root and signing controls into retention
+  and profile-selection policy.
 - Build retrieval on top of cataloged operator references only after guidance
   output stays visibly separate from evidence-backed claims.
 - Move run-manifest signing from shared workstation keys to a verifiable

@@ -10,6 +10,14 @@ user, and `vmrun` path, but it must not contain guest passwords or tokens.
 Secrets remain environment-provided so shareable host profiles do not become
 credential bundles.
 
+The same host config can define `operator_policy` for plan-driven workflow
+runs. `allowed_output_roots` constrains `run-case` output directories before
+guest work begins. `require_signed_run_manifests` requires
+`FINDEVIL_RUN_MANIFEST_KEY` before workflow output starts. Relative allowed
+roots resolve from the host config directory, so the example config can keep
+artifacts under the repository while a deployed profile can point at a case
+workspace.
+
 Operator PDF and runbook references can be cataloged through a separate
 knowledge manifest described in `docs/knowledge-corpus.md`. Those sources are
 guidance inputs for future plan or next-action assistance, not evidence inputs

@@ -4,7 +4,7 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase
 from unittest.mock import patch
 
-from findevil_sift.config import load_host_config
+from findevil_sift.config import enforce_workflow_policy, load_host_config
 from findevil_sift.vmware import SiftVmConfig
 
 
@@ -70,3 +70,64 @@ class HostConfigTests(TestCase):
         with patch.dict("os.environ", {"SIFT_GUEST_PASSWORD": "secret-from-env"}, clear=True):
             with self.assertRaisesRegex(ValueError, "Set SIFT_VMX_PATH"):
                 SiftVmConfig.from_environment()
+
+    def test_operator_policy_resolves_relative_allowed_output_roots(self) -> None:
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "config" / "host.json"
+            path.parent.mkdir()
+            path.write_text(
+                json.dumps(
+                    {
+                        "operator_policy": {
+                            "allowed_output_roots": ["../case-outputs"],
+                            "require_signed_run_manifests": True,
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            config = load_host_config(path)
+
+        self.assertEqual(
+            config["operator_policy"]["allowed_output_roots"],
+            [str((path.parent / "../case-outputs").resolve())],
+        )
+        self.assertTrue(config["operator_policy"]["require_signed_run_manifests"])
+
+    def test_operator_policy_blocks_unsigned_or_out_of_root_workflow_outputs(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            allowed = root / "allowed"
+            path = root / "host.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "operator_policy": {
+                            "allowed_output_roots": [str(allowed)],
+                            "require_signed_run_manifests": True,
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "requires signed run manifests"):
+                enforce_workflow_policy(
+                    allowed / "case-a",
+                    signing_key_present=False,
+                    config_path=path,
+                )
+            with self.assertRaisesRegex(ValueError, "outside operator policy"):
+                enforce_workflow_policy(
+                    root / "outside" / "case-b",
+                    signing_key_present=True,
+                    config_path=path,
+                )
+            policy = enforce_workflow_policy(
+                allowed / "case-c",
+                signing_key_present=True,
+                config_path=path,
+            )
+
+        self.assertTrue(policy["require_signed_run_manifests"])
