@@ -64,6 +64,21 @@ $env:PYTHONPATH='src'
 python -m unittest discover -s tests -v
 ```
 
+Optional local reference PDFs can be cataloged separately from evidence. Start
+from `knowledge/corpus.example.json`, keep any local manifest and indexes
+ignored, and write the catalog into `artifacts/`:
+
+```powershell
+.\.venv\Scripts\findevil-sift.exe validate-knowledge-manifest `
+  '.\knowledge\corpus.example.json'
+.\.venv\Scripts\findevil-sift.exe catalog-knowledge `
+  '.\knowledge\corpus.example.json' `
+  --output-dir '.\artifacts\knowledge-catalog'
+```
+
+Knowledge catalogs preserve source hashes and scope for operator references.
+They are guidance for plans and next actions, not evidence support for findings.
+
 The first constrained local tool is a read-only evidence hash operation:
 
 ```powershell

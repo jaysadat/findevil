@@ -8,6 +8,8 @@ unbounded guest shell:
 - Guest evidence paths must live below `/cases`.
 - Shareable host VM settings can live in a JSON host config while guest secrets
   remain environment-provided.
+- Optional reference corpora are cataloged as guidance sources with hashes and
+  a strict reporting boundary outside case evidence.
 - Case plans are validated before VMware guest work begins.
 - Each lane has a narrow operation set and produces structured JSON plus
   preserved raw outputs.
@@ -53,6 +55,8 @@ dossier for quality control against a known case profile.
 
 - Extend configuration from host VM settings into output retention and profile
   selection policy.
+- Build retrieval on top of cataloged operator references only after guidance
+  output stays visibly separate from evidence-backed claims.
 - Add signed run manifests for bundles that leave the workstation.
 - Add memory-forensics plugins and broader disk extraction only when preserved
   outputs can support stronger findings than the current quick-response lanes.

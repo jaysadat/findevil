@@ -1,0 +1,38 @@
+{
+  "knowledge_id": "operator-dfir-guidance",
+  "description": "Local operator-provided DFIR references. These are guidance, not evidence.",
+  "roots": [
+    {
+      "label": "runbooks",
+      "path": "E:\\ai-cyber-assistant\\data\\runbooks",
+      "include": [
+        "**/*.pdf"
+      ],
+      "allowed_suffixes": [
+        ".pdf"
+      ]
+    },
+    {
+      "label": "reference-sheets",
+      "path": "E:\\ai-cyber-assistant\\data\\sans",
+      "include": [
+        "*Cheat*.pdf",
+        "*SIFT*.pdf",
+        "*DFIR*.pdf"
+      ],
+      "allowed_suffixes": [
+        ".pdf"
+      ]
+    },
+    {
+      "label": "mitre",
+      "path": "E:\\ai-cyber-assistant\\data\\mitre",
+      "include": [
+        "**/*.pdf"
+      ],
+      "allowed_suffixes": [
+        ".pdf"
+      ]
+    }
+  ]
+}

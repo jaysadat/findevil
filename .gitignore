@@ -1,5 +1,7 @@
 .env
 config/sift-host.json
+knowledge/corpus.json
+knowledge/indexes/
 .venv/
 __pycache__/
 *.egg-info/

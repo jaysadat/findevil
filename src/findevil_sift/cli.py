@@ -19,6 +19,7 @@ from .case_plans import (
     write_discovered_case_plan,
 )
 from .correlate import correlate_case_summaries, write_case_correlation
+from .knowledge import catalog_knowledge, load_and_validate_knowledge_manifest
 from .tools import hash_evidence
 from .vmware import (
     SiftVmConfig,
@@ -197,6 +198,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     validate_plan_parser.add_argument("case_plan", type=Path)
     validate_plan_parser.add_argument("--output", type=Path)
 
+    validate_knowledge_parser = subparsers.add_parser(
+        "validate-knowledge-manifest",
+        help="Validate a local reference-corpus manifest before cataloging it.",
+    )
+    validate_knowledge_parser.add_argument("manifest", type=Path)
+    validate_knowledge_parser.add_argument("--output", type=Path)
+
+    catalog_knowledge_parser = subparsers.add_parser(
+        "catalog-knowledge",
+        help="Catalog local reference PDFs, text, and Markdown without treating them as evidence.",
+    )
+    catalog_knowledge_parser.add_argument("manifest", type=Path)
+    catalog_knowledge_parser.add_argument("--output-dir", type=Path, required=True)
+
     discover_parser = subparsers.add_parser(
         "discover-case",
         help="Inventory a SIFT case root and optionally draft a reviewable case plan.",
@@ -367,6 +382,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.output.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0 if result["passed"] else 1
+    if args.command == "validate-knowledge-manifest":
+        _, result = load_and_validate_knowledge_manifest(args.manifest)
+        if args.output:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0 if result["passed"] else 1
+    if args.command == "catalog-knowledge":
+        result = catalog_knowledge(args.manifest, args.output_dir)
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
     if args.command == "discover-case":
         config = SiftVmConfig.from_environment(vmx_path=args.vmx_path)
         result = inventory_guest_case(
