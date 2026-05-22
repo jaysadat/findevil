@@ -16,7 +16,8 @@ guest work begins. `require_signed_run_manifests` requires
 `FINDEVIL_RUN_MANIFEST_KEY` before workflow output starts. Relative allowed
 roots resolve from the host config directory, so the example config can keep
 artifacts under the repository while a deployed profile can point at a case
-workspace.
+workspace. `approved_knowledge_index_roots` does the same for queried and
+evaluated local guidance indexes.
 
 Operator PDF and runbook references can be cataloged through a separate
 knowledge manifest described in `docs/knowledge-corpus.md`. Those sources are

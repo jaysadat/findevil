@@ -1,0 +1,21 @@
+{
+  "evaluation_id": "operator-dfir-guidance-sample",
+  "queries": [
+    {
+      "id": "memory-forensics-next-actions",
+      "query": "memory forensics process volatility plugins",
+      "expected_relative_paths": [
+        "SANS-Memory-Forensics-Cheatsheet-102325.pdf"
+      ],
+      "limit": 5
+    },
+    {
+      "id": "sift-command-reference",
+      "query": "SIFT commands filesystem disk evidence",
+      "expected_relative_paths": [
+        "SANS-SIFT-Cheatsheet-102325.pdf"
+      ],
+      "limit": 5
+    }
+  ]
+}

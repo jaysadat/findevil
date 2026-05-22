@@ -8,6 +8,9 @@
     "allowed_output_roots": [
       "..\\artifacts"
     ],
+    "approved_knowledge_index_roots": [
+      "..\\knowledge\\indexes"
+    ],
     "require_signed_run_manifests": false
   }
 }

@@ -24,6 +24,7 @@ from .knowledge import (
     index_knowledge,
     load_and_validate_knowledge_manifest,
     query_knowledge,
+    validate_knowledge_guidance,
 )
 from .run_manifest import signing_key_from_environment, verify_run_manifest
 from .tools import hash_evidence
@@ -234,6 +235,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     query_knowledge_parser.add_argument("--output-dir", type=Path, required=True)
     query_knowledge_parser.add_argument("--limit", type=int, default=5)
 
+    validate_guidance_parser = subparsers.add_parser(
+        "validate-knowledge-guidance",
+        help="Evaluate bounded guidance hits against an expected retrieval manifest.",
+    )
+    validate_guidance_parser.add_argument("index", type=Path)
+    validate_guidance_parser.add_argument("manifest", type=Path)
+    validate_guidance_parser.add_argument("--output", type=Path)
+
     verify_run_manifest_parser = subparsers.add_parser(
         "verify-run-manifest",
         help="Verify workflow bundle hashes and an optional environment-keyed manifest signature.",
@@ -434,6 +443,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
+    if args.command == "validate-knowledge-guidance":
+        result = validate_knowledge_guidance(args.index, args.manifest)
+        if args.output:
+            args.output.parent.mkdir(parents=True, exist_ok=True)
+            args.output.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0 if result["passed"] else 1
     if args.command == "verify-run-manifest":
         result = verify_run_manifest(args.manifest, signing_key=signing_key_from_environment())
         print(json.dumps(result, indent=2, sort_keys=True))

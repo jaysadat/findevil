@@ -14,6 +14,8 @@ unbounded guest shell:
   a strict reporting boundary outside case evidence.
 - Cataloged operator references can be indexed and queried through bounded
   lexical guidance retrieval that preserves source hashes and locations.
+- Operator policy can constrain queried guidance indexes, and expected-hit
+  evaluation fixtures score approved retrieval coverage.
 - Case plans are validated before VMware guest work begins.
 - Each lane has a narrow operation set and produces structured JSON plus
   preserved raw outputs.
@@ -61,8 +63,8 @@ dossier for quality control against a known case profile.
 
 - Extend operator policy from output-root and signing controls into retention
   and profile-selection policy.
-- Add operator-policy selection and evaluation fixtures for guidance indexes
-  before using retrieval to draft case plans or next actions.
+- Add a reviewed guidance-to-case-plan drafting boundary with evaluation
+  coverage before retrieval suggests workflow inputs.
 - Move run-manifest signing from shared workstation keys to a verifiable
   asymmetric export-signing profile.
 - Add memory-forensics plugins and broader disk extraction only when preserved

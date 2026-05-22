@@ -54,7 +54,8 @@ win over the host config file, and the config file wins over built-in VMware
 defaults. Guest passwords are intentionally rejected from host config files.
 The same host config can set workflow operator policy: allowed output roots and
 whether `run-case` must have `FINDEVIL_RUN_MANIFEST_KEY` before guest work
-starts. Relative allowed roots resolve from the host config directory.
+starts. It can also approve local guidance index roots. Relative policy roots
+resolve from the host config directory.
 
 Run the local audit primitive tests with:
 
@@ -79,7 +80,8 @@ Knowledge catalogs preserve source hashes and scope for operator references.
 They are guidance for plans and next actions, not evidence support for findings.
 Use `index-knowledge` and `query-knowledge` after cataloging when a bounded
 local guidance search is useful; query hits stay labeled separately from case
-evidence outputs.
+evidence outputs. `validate-knowledge-guidance` checks approved indexes against
+expected-hit fixtures before guidance is used for automation.
 
 The first constrained local tool is a read-only evidence hash operation:
 

@@ -9,6 +9,8 @@ from typing import Any
 
 from pypdf import PdfReader
 
+from .config import enforce_knowledge_index_policy
+
 SUPPORTED_SUFFIXES = {".pdf", ".txt", ".md"}
 INDEX_SCHEMA = "findevil.knowledge_index.v1"
 GUIDANCE_SCHEMA = "findevil.knowledge_guidance.v1"
@@ -229,13 +231,10 @@ def query_knowledge(
     if not terms:
         raise ValueError("knowledge query must contain searchable terms")
     path = index_path.resolve(strict=True)
+    enforce_knowledge_index_policy(path)
     index = json.loads(path.read_text(encoding="utf-8"))
     validate_index_for_query(index)
-    ranked = sorted(
-        (score_chunk(chunk, terms) for chunk in index["chunks"]),
-        key=lambda item: (-item["score"], item["label"], item["relative_path"], item["chunk_id"]),
-    )
-    hits = [item for item in ranked if item["score"] > 0][:limit]
+    hits = guidance_hits(index, cleaned_query, limit)
     guidance = {
         "schema": GUIDANCE_SCHEMA,
         "generated_at": utc_now(),
@@ -260,6 +259,54 @@ def query_knowledge(
     }
 
 
+def validate_knowledge_guidance(
+    index_path: Path,
+    manifest_path: Path,
+) -> dict[str, Any]:
+    path = index_path.resolve(strict=True)
+    enforce_knowledge_index_policy(path)
+    index = json.loads(path.read_text(encoding="utf-8"))
+    validate_index_for_query(index)
+    manifest_path = manifest_path.resolve(strict=True)
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    validate_guidance_evaluation_manifest(manifest)
+    checks = []
+    cases = []
+    for case in manifest["queries"]:
+        hits = guidance_hits(index, case["query"], case.get("limit", 5))
+        observed_paths = [hit["relative_path"] for hit in hits]
+        case_checks = [
+            check(
+                f"{case['id']}:expected_source:{expected}",
+                expected in observed_paths,
+                "expected guidance source in bounded hits",
+                observed_paths,
+            )
+            for expected in case.get("expected_relative_paths", [])
+        ]
+        checks.extend(case_checks)
+        cases.append(
+            {
+                "id": case["id"],
+                "query": case["query"],
+                "hit_count": len(hits),
+                "hit_relative_paths": observed_paths,
+                "checks": case_checks,
+            }
+        )
+    passed_checks = sum(1 for item in checks if item["passed"])
+    return {
+        "evaluation_id": manifest["evaluation_id"],
+        "generated_at": utc_now(),
+        "index_path": str(path),
+        "manifest_path": str(manifest_path),
+        "boundary": EVIDENCE_BOUNDARY,
+        "passed": passed_checks == len(checks),
+        "score": {"passed_checks": passed_checks, "total_checks": len(checks)},
+        "cases": cases,
+    }
+
+
 def validate_catalog_for_index(catalog: Any) -> None:
     if not isinstance(catalog, dict) or not isinstance(catalog.get("sources"), list):
         raise ValueError("knowledge catalog must contain a source list")
@@ -276,6 +323,35 @@ def validate_index_for_query(index: Any) -> None:
         raise ValueError("knowledge index boundary is missing or unsupported")
     if not isinstance(index.get("chunks"), list):
         raise ValueError("knowledge index must contain chunks")
+
+
+def validate_guidance_evaluation_manifest(manifest: Any) -> None:
+    if not isinstance(manifest, dict):
+        raise ValueError("guidance evaluation manifest must be a JSON object")
+    if not isinstance(manifest.get("evaluation_id"), str) or not manifest["evaluation_id"].strip():
+        raise ValueError("guidance evaluation manifest requires evaluation_id")
+    queries = manifest.get("queries")
+    if not isinstance(queries, list) or not queries:
+        raise ValueError("guidance evaluation manifest requires queries")
+    for case in queries:
+        if not isinstance(case, dict):
+            raise ValueError("guidance evaluation query must be an object")
+        if not isinstance(case.get("id"), str) or not case["id"].strip():
+            raise ValueError("guidance evaluation query requires id")
+        if not query_terms(str(case.get("query", ""))):
+            raise ValueError(f"guidance evaluation query {case['id']} requires searchable terms")
+        expected = case.get("expected_relative_paths")
+        if not isinstance(expected, list) or not expected or any(
+            not isinstance(path, str) or not path.strip() for path in expected
+        ):
+            raise ValueError(
+                f"guidance evaluation query {case['id']} requires expected_relative_paths"
+            )
+        limit = case.get("limit", 5)
+        if not isinstance(limit, int) or limit < 1 or limit > MAX_QUERY_HITS:
+            raise ValueError(
+                f"guidance evaluation query {case['id']} limit must be between 1 and {MAX_QUERY_HITS}"
+            )
 
 
 def index_source(source: dict[str, Any]) -> list[dict[str, Any]]:
@@ -350,6 +426,19 @@ def score_chunk(chunk: dict[str, Any], terms: list[str]) -> dict[str, Any]:
         "location": chunk["location"],
         "text": text,
     }
+
+
+def guidance_hits(index: dict[str, Any], query: str, limit: int) -> list[dict[str, Any]]:
+    terms = query_terms(query.strip())
+    if not terms:
+        raise ValueError("knowledge query must contain searchable terms")
+    if limit < 1 or limit > MAX_QUERY_HITS:
+        raise ValueError(f"knowledge query limit must be between 1 and {MAX_QUERY_HITS}")
+    ranked = sorted(
+        (score_chunk(chunk, terms) for chunk in index["chunks"]),
+        key=lambda item: (-item["score"], item["label"], item["relative_path"], item["chunk_id"]),
+    )
+    return [item for item in ranked if item["score"] > 0][:limit]
 
 
 def sha256_file(path: Path) -> str:

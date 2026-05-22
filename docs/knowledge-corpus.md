@@ -57,3 +57,21 @@ extraction. The index caps extracted characters per source and returns bounded
 lexical chunks with source label, relative path, location, chunk ID, and source
 SHA-256. It is a local guidance retrieval layer rather than an evidence lane:
 the query output repeats the boundary and cannot promote a case claim.
+
+## Guidance Policy And Evaluation
+
+Host config `operator_policy.approved_knowledge_index_roots` can constrain
+`query-knowledge` and guidance evaluation to selected local index roots. Use an
+evaluation manifest before guidance starts drafting plans or next actions:
+
+```powershell
+.\.venv\Scripts\findevil-sift.exe validate-knowledge-guidance `
+  '.\knowledge\indexes\operator-dfir-guidance\knowledge-index.json' `
+  '.\benchmarks\guidance-evaluation.example.json' `
+  --output '.\artifacts\knowledge-guidance-evaluation.json'
+```
+
+The example fixture expects the selected SANS memory and SIFT cheat sheets from
+`knowledge/corpus.example.json`. Evaluation checks whether expected relative
+source paths appear within each bounded query result; it measures retrieval
+coverage, not forensic truth.

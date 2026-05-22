@@ -8,6 +8,7 @@ from findevil_sift.knowledge import (
     catalog_knowledge,
     index_knowledge,
     query_knowledge,
+    validate_knowledge_guidance,
     validate_knowledge_manifest,
 )
 
@@ -147,3 +148,54 @@ class KnowledgeCatalogTests(TestCase):
         self.assertEqual(index_result["status"], "partial")
         self.assertEqual(index_result["chunk_count"], 0)
         self.assertIn("SHA-256 changed", index["skipped_sources"][0]["reason"])
+
+    def test_guidance_evaluation_scores_expected_source_hits(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory) / "references"
+            root.mkdir()
+            (root / "memory.md").write_text(
+                "Volatility memory process guidance for forensic review.",
+                encoding="utf-8",
+            )
+            manifest_path = Path(directory) / "knowledge.json"
+            manifest_path.write_text(
+                json.dumps(
+                    {
+                        "knowledge_id": "guidance",
+                        "roots": [
+                            {
+                                "label": "local",
+                                "path": str(root),
+                                "include": ["**/*.md"],
+                                "allowed_suffixes": [".md"],
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+            catalog = catalog_knowledge(manifest_path, Path(directory) / "catalog")
+            index = index_knowledge(Path(catalog["summary"]), Path(directory) / "index")
+            evaluation_path = Path(directory) / "evaluation.json"
+            evaluation_path.write_text(
+                json.dumps(
+                    {
+                        "evaluation_id": "memory-guidance",
+                        "queries": [
+                            {
+                                "id": "memory-process",
+                                "query": "memory volatility process",
+                                "expected_relative_paths": ["memory.md"],
+                                "limit": 3,
+                            }
+                        ],
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            result = validate_knowledge_guidance(Path(index["summary"]), evaluation_path)
+
+        self.assertTrue(result["passed"])
+        self.assertEqual(result["score"], {"passed_checks": 1, "total_checks": 1})
+        self.assertEqual(result["cases"][0]["hit_relative_paths"], ["memory.md"])

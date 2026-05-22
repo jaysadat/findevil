@@ -4,7 +4,11 @@ from tempfile import TemporaryDirectory
 from unittest import TestCase
 from unittest.mock import patch
 
-from findevil_sift.config import enforce_workflow_policy, load_host_config
+from findevil_sift.config import (
+    enforce_knowledge_index_policy,
+    enforce_workflow_policy,
+    load_host_config,
+)
 from findevil_sift.vmware import SiftVmConfig
 
 
@@ -80,6 +84,7 @@ class HostConfigTests(TestCase):
                     {
                         "operator_policy": {
                             "allowed_output_roots": ["../case-outputs"],
+                            "approved_knowledge_index_roots": ["../knowledge-indexes"],
                             "require_signed_run_manifests": True,
                         }
                     }
@@ -94,6 +99,10 @@ class HostConfigTests(TestCase):
             [str((path.parent / "../case-outputs").resolve())],
         )
         self.assertTrue(config["operator_policy"]["require_signed_run_manifests"])
+        self.assertEqual(
+            config["operator_policy"]["approved_knowledge_index_roots"],
+            [str((path.parent / "../knowledge-indexes").resolve())],
+        )
 
     def test_operator_policy_blocks_unsigned_or_out_of_root_workflow_outputs(self) -> None:
         with TemporaryDirectory() as directory:
@@ -131,3 +140,31 @@ class HostConfigTests(TestCase):
             )
 
         self.assertTrue(policy["require_signed_run_manifests"])
+
+    def test_operator_policy_blocks_unapproved_knowledge_indexes(self) -> None:
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            approved = root / "approved"
+            approved.mkdir()
+            approved_index = approved / "knowledge-index.json"
+            approved_index.write_text("{}", encoding="utf-8")
+            outside = root / "outside" / "knowledge-index.json"
+            outside.parent.mkdir()
+            outside.write_text("{}", encoding="utf-8")
+            path = root / "host.json"
+            path.write_text(
+                json.dumps(
+                    {
+                        "operator_policy": {
+                            "approved_knowledge_index_roots": [str(approved)],
+                        }
+                    }
+                ),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(ValueError, "outside operator policy"):
+                enforce_knowledge_index_policy(outside, config_path=path)
+            policy = enforce_knowledge_index_policy(approved_index, config_path=path)
+
+        self.assertEqual(policy["approved_knowledge_index_roots"], [str(approved.resolve())])

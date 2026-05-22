@@ -7,7 +7,11 @@ from typing import Any
 
 CONFIG_ENV = "FINDEVIL_SIFT_CONFIG"
 HOST_CONFIG_FIELDS = {"vmx_path", "guest_user", "vmrun_path"}
-OPERATOR_POLICY_FIELDS = {"allowed_output_roots", "require_signed_run_manifests"}
+OPERATOR_POLICY_FIELDS = {
+    "allowed_output_roots",
+    "approved_knowledge_index_roots",
+    "require_signed_run_manifests",
+}
 SECRET_FIELDS = {"password", "guest_password", "guest_token", "token"}
 
 
@@ -54,7 +58,11 @@ def load_operator_policy(config_path: str | Path | None = None) -> dict[str, Any
     config = load_host_config(config_path)
     return config.get(
         "operator_policy",
-        {"allowed_output_roots": [], "require_signed_run_manifests": False},
+        {
+            "allowed_output_roots": [],
+            "approved_knowledge_index_roots": [],
+            "require_signed_run_manifests": False,
+        },
     )
 
 
@@ -77,6 +85,23 @@ def enforce_workflow_policy(
     return policy
 
 
+def enforce_knowledge_index_policy(
+    index_path: Path,
+    *,
+    config_path: str | Path | None = None,
+) -> dict[str, Any]:
+    policy = load_operator_policy(config_path)
+    resolved_index = index_path.expanduser().resolve()
+    approved_roots = [Path(root) for root in policy["approved_knowledge_index_roots"]]
+    if approved_roots and not any(resolved_index.is_relative_to(root) for root in approved_roots):
+        approved = ", ".join(str(root) for root in approved_roots)
+        raise ValueError(
+            "knowledge index is outside operator policy approved_knowledge_index_roots: "
+            f"{approved}"
+        )
+    return policy
+
+
 def validate_operator_policy(policy: Any, config_path: Path) -> dict[str, Any]:
     if not isinstance(policy, dict):
         raise ValueError("host config operator_policy section must be an object")
@@ -90,6 +115,14 @@ def validate_operator_policy(policy: Any, config_path: Path) -> dict[str, Any]:
         not isinstance(root, str) or not root.strip() for root in allowed_output_roots
     ):
         raise ValueError("host config operator_policy allowed_output_roots must be non-empty path strings")
+    approved_knowledge_index_roots = policy.get("approved_knowledge_index_roots", [])
+    if not isinstance(approved_knowledge_index_roots, list) or any(
+        not isinstance(root, str) or not root.strip() for root in approved_knowledge_index_roots
+    ):
+        raise ValueError(
+            "host config operator_policy approved_knowledge_index_roots "
+            "must be non-empty path strings"
+        )
     require_signed = policy.get("require_signed_run_manifests", False)
     if not isinstance(require_signed, bool):
         raise ValueError(
@@ -98,6 +131,9 @@ def validate_operator_policy(policy: Any, config_path: Path) -> dict[str, Any]:
     return {
         "allowed_output_roots": [
             str(resolve_config_path(config_path, root)) for root in allowed_output_roots
+        ],
+        "approved_knowledge_index_roots": [
+            str(resolve_config_path(config_path, root)) for root in approved_knowledge_index_roots
         ],
         "require_signed_run_manifests": require_signed,
     }
