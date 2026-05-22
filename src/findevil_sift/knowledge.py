@@ -103,7 +103,7 @@ def catalog_knowledge(manifest_path: Path, output_dir: Path) -> dict[str, str | 
     sources = []
     missing_roots = []
     for root in manifest["roots"]:
-        root_path = Path(root["path"]).expanduser()
+        root_path = Path(root["path"]).expanduser().resolve()
         if not root_path.is_dir():
             missing_roots.append({"label": root["label"], "path": str(root_path)})
             continue
