@@ -65,3 +65,8 @@ class HostConfigTests(TestCase):
         self.assertEqual(config.guest_user, "environment-user")
         self.assertEqual(config.vmx_path, Path("environment.vmx"))
         self.assertEqual(config.vmrun_path, Path("environment-vmrun"))
+
+    def test_requires_vm_path_from_operator_configuration(self) -> None:
+        with patch.dict("os.environ", {"SIFT_GUEST_PASSWORD": "secret-from-env"}, clear=True):
+            with self.assertRaisesRegex(ValueError, "Set SIFT_VMX_PATH"):
+                SiftVmConfig.from_environment()

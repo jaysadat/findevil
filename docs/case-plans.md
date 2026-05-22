@@ -8,7 +8,7 @@ hardcoding evidence paths or scenario facts.
 Inventory a case folder and draft a reviewable plan:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\.venv\Scripts\findevil-sift.exe discover-case `
   '/cases/acme' `
   --output-dir '.\artifacts\acme-discovery' `

@@ -189,7 +189,7 @@ Create and validate a new case plan:
 Inventory a case root and draft a plan:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\.venv\Scripts\findevil-sift.exe discover-case `
   '/cases/acme' `
   --output-dir '.\artifacts\acme-discovery' `
@@ -199,7 +199,7 @@ $env:SIFT_GUEST_PASSWORD='forensics'
 ```
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 $env:PYTHONPATH='src'
 python -m findevil_sift.cli pcap-triage `
   '/cases/R&M/case001-pcap/case001.pcap' `
@@ -209,7 +209,7 @@ python -m findevil_sift.cli pcap-triage `
 Run the Autoruns lane against the current DC export:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\.venv\Scripts\findevil-sift.exe autoruns-triage `
   '/cases/R&M/DC/DC01-autorunsc.zip' `
   --output-dir '.\artifacts\rm-dc-autoruns'
@@ -218,7 +218,7 @@ $env:SIFT_GUEST_PASSWORD='forensics'
 Run a case plan:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\.venv\Scripts\findevil-sift.exe run-case `
   '.\cases\rm-stolen-szechuan-sauce.json' `
   --output-dir '.\artifacts\sample-case'
@@ -253,7 +253,7 @@ Install the project into a virtual environment, then expose the stdio server:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e .
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\.venv\Scripts\findevil-sift-mcp.exe
 ```
 

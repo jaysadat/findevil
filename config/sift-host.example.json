@@ -1,6 +1,6 @@
 {
   "sift_vm": {
-    "vmx_path": "E:\\Ollama\\SIFT\\SIFT.vmx",
+    "vmx_path": "C:\\VMs\\SIFT\\SIFT.vmx",
     "guest_user": "sansforensics",
     "vmrun_path": "C:\\Program Files (x86)\\VMware\\VMware Workstation\\vmrun.exe"
   }

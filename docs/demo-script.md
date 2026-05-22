@@ -50,7 +50,7 @@ Use the R&M fixture for the recorded path:
 Prepare the full recording artifact set before the time-boxed capture:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\scripts\run-rm-live-demo.ps1 -OutputRoot '.\artifacts\rm-live-demo'
 ```
 
@@ -61,7 +61,7 @@ open during narration.
 For the live five-minute capture, run the short real-case correction path:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\scripts\run-rm-live-demo.ps1 `
   -OutputRoot '.\artifacts\rm-live-correction' `
   -QuickCorrection `
@@ -75,7 +75,7 @@ waiting for the full six-lane benchmark run on camera.
 Manual correction path:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\.venv\Scripts\findevil-sift.exe run-case `
   '.\artifacts\demo-discovery\rm-discovered.json' `
   --output-dir '.\artifacts\demo-discovered-run'
@@ -84,7 +84,7 @@ $env:SIFT_GUEST_PASSWORD='forensics'
 Full benchmarked path:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\scripts\run-rm-case-demo.ps1 -OutputRoot '.\artifacts\demo-full-case'
 ```
 

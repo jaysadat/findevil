@@ -27,7 +27,7 @@ if ([string]::IsNullOrWhiteSpace($VmxPath)) {
     $VmxPath = if ($hostConfig -and $hostConfig.sift_vm.vmx_path) {
         $hostConfig.sift_vm.vmx_path
     } else {
-        'E:\Ollama\SIFT\SIFT.vmx'
+        throw 'Set SIFT_VMX_PATH or configure sift_vm.vmx_path before running the guest probe.'
     }
 }
 if ([string]::IsNullOrWhiteSpace($GuestUser)) {

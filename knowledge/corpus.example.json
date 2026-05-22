@@ -4,7 +4,7 @@
   "roots": [
     {
       "label": "runbooks",
-      "path": "E:\\ai-cyber-assistant\\data\\runbooks",
+      "path": "C:\\DFIR\\knowledge\\runbooks",
       "include": [
         "**/*.pdf"
       ],
@@ -14,7 +14,7 @@
     },
     {
       "label": "reference-sheets",
-      "path": "E:\\ai-cyber-assistant\\data\\sans",
+      "path": "C:\\DFIR\\knowledge\\reference-sheets",
       "include": [
         "*Cheat*.pdf",
         "*SIFT*.pdf",
@@ -26,7 +26,7 @@
     },
     {
       "label": "mitre",
-      "path": "E:\\ai-cyber-assistant\\data\\mitre",
+      "path": "C:\\DFIR\\knowledge\\mitre",
       "include": [
         "**/*.pdf"
       ],

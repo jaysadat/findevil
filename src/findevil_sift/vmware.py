@@ -20,7 +20,6 @@ from .reports import (
 )
 
 DEFAULT_VMRUN_PATH = Path(r"C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe")
-DEFAULT_VMX_PATH = Path(r"E:\Ollama\SIFT\SIFT.vmx")
 
 
 @dataclass(frozen=True)
@@ -40,13 +39,14 @@ class SiftVmConfig:
         if not password:
             raise ValueError("Set SIFT_GUEST_PASSWORD before using SIFT guest tools.")
         host_config = load_host_config(host_config_path).get("sift_vm", {})
+        selected_vmx_path = vmx_path or os.environ.get("SIFT_VMX_PATH") or host_config.get("vmx_path")
+        if not selected_vmx_path:
+            raise ValueError(
+                "Set SIFT_VMX_PATH, configure sift_vm.vmx_path, or pass an explicit VMX path."
+            )
 
         return cls(
-            vmx_path=Path(
-                vmx_path
-                or os.environ.get("SIFT_VMX_PATH")
-                or host_config.get("vmx_path", DEFAULT_VMX_PATH)
-            ),
+            vmx_path=Path(selected_vmx_path),
             guest_user=os.environ.get(
                 "SIFT_GUEST_USER",
                 host_config.get("guest_user", "sansforensics"),

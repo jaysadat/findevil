@@ -32,26 +32,22 @@ case without making those facts the default product behavior.
    .\.venv\Scripts\python.exe -m pip install -e .
    ```
 
-2. Set `SIFT_GUEST_PASSWORD` in the current shell.
-3. Run the host probe:
+2. Copy `config/sift-host.example.json` to ignored `config/sift-host.json`
+   and set the local `vmx_path`.
+3. Set the host config and guest password in the current shell:
+
+   ```powershell
+   $env:FINDEVIL_SIFT_CONFIG='config\sift-host.json'
+   $env:SIFT_GUEST_PASSWORD='<guest-password>'
+   ```
+
+4. Run the host probe:
 
    ```powershell
    .\scripts\probe-sift.ps1
    ```
 
-4. Review the returned JSON before adding deeper automation.
-
-The probe defaults to the local VM path discovered on this host:
-`E:\Ollama\SIFT\SIFT.vmx`.
-
-For a reusable host setup, copy the shape in
-`config/sift-host.example.json` to ignored `config/sift-host.json`, set
-`FINDEVIL_SIFT_CONFIG`, and keep `SIFT_GUEST_PASSWORD` in the environment:
-
-```powershell
-$env:FINDEVIL_SIFT_CONFIG='config\sift-host.json'
-$env:SIFT_GUEST_PASSWORD='forensics'
-```
+5. Review the returned JSON before adding deeper automation.
 
 Explicit CLI VMX overrides win over `SIFT_VMX_PATH`, environment VM settings
 win over the host config file, and the config file wins over built-in VMware
@@ -89,7 +85,7 @@ python -m findevil_sift.cli hash-evidence .\README.md
 The first SIFT-backed product lane is PCAP triage:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 $env:PYTHONPATH='src'
 python -m findevil_sift.cli pcap-triage `
   '/cases/R&M/case001-pcap/case001.pcap' `
@@ -114,7 +110,7 @@ Start a new editable plan with:
 Or inventory a SIFT case root and draft one for review:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\.venv\Scripts\findevil-sift.exe discover-case `
   '/cases/acme' `
   --output-dir '.\artifacts\acme-discovery' `
@@ -145,21 +141,21 @@ After installing the project into `.venv`, the sample PCAP fixture script runs
 triage and validation together:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\scripts\run-rm-pcap-demo.ps1
 ```
 
 The two-lane sample fixture runs the PCAP and DC disk paths together:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\scripts\run-rm-two-lane-demo.ps1
 ```
 
 Run a plan-driven case workflow:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\.venv\Scripts\findevil-sift.exe run-case `
   '.\cases\rm-stolen-szechuan-sauce.json' `
   --output-dir '.\artifacts\sample-case'
@@ -168,7 +164,7 @@ $env:SIFT_GUEST_PASSWORD='forensics'
 The R&M sample helper script invokes the same product command:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\scripts\run-rm-case-demo.ps1
 ```
 
@@ -176,7 +172,7 @@ For a recording path that includes discovery, the memory-lane correction event,
 and the full benchmarked case run:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\scripts\run-rm-live-demo.ps1 -OutputRoot '.\artifacts\rm-live-demo'
 ```
 

@@ -7,7 +7,7 @@ The VMware-backed demo path was exercised against the sample evidence under
 
 Probe result:
 
-- VMX path: `E:\Ollama\SIFT\SIFT.vmx`
+- VMX path: configured local SIFT VMX path
 - VMware Tools state: `installed`
 - Guest user: `sansforensics`
 - Guest tools observed for the current lanes included `python3`, `ewfinfo`,
@@ -33,7 +33,7 @@ long to wait through during a five-minute recording. The quick recording path
 was also exercised against discovered real `/cases/R&M` memory evidence:
 
 ```powershell
-$env:SIFT_GUEST_PASSWORD='forensics'
+$env:SIFT_GUEST_PASSWORD='<guest-password>'
 .\scripts\run-rm-live-demo.ps1 `
   -OutputRoot '.\artifacts\rm-live-correction' `
   -QuickCorrection `

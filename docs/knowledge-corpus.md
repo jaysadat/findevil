@@ -15,10 +15,10 @@ manifest. A root names:
 - Include globs.
 - Allowed suffixes from `.pdf`, `.txt`, and `.md`.
 
-The example points at selected folders from the older local
-`E:\ai-cyber-assistant\data` corpus. Keep licensed PDFs and local indexes out
-of the public repository. Ignored `knowledge/corpus.json` can describe an
-operator-specific corpus when paths differ.
+The example points at placeholder folders for a local DFIR reference corpus.
+Keep licensed PDFs and local indexes out of the public repository. Ignored
+`knowledge/corpus.json` can describe an operator-specific corpus when paths
+differ.
 
 ## Catalog
 
