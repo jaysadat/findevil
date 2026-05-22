@@ -6,6 +6,8 @@ Find Evil SIFT is designed as a controlled forensic workflow rather than an
 unbounded guest shell:
 
 - Guest evidence paths must live below `/cases`.
+- Shareable host VM settings can live in a JSON host config while guest secrets
+  remain environment-provided.
 - Case plans are validated before VMware guest work begins.
 - Each lane has a narrow operation set and produces structured JSON plus
   preserved raw outputs.
@@ -49,8 +51,8 @@ dossier for quality control against a known case profile.
 
 ## Next Hardening
 
-- Add configuration files for VM paths, output retention, and profile
-  selection.
+- Extend configuration from host VM settings into output retention and profile
+  selection policy.
 - Add signed run manifests for bundles that leave the workstation.
 - Add memory-forensics plugins and broader disk extraction only when preserved
   outputs can support stronger findings than the current quick-response lanes.

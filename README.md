@@ -44,6 +44,19 @@ case without making those facts the default product behavior.
 The probe defaults to the local VM path discovered on this host:
 `E:\Ollama\SIFT\SIFT.vmx`.
 
+For a reusable host setup, copy the shape in
+`config/sift-host.example.json` to ignored `config/sift-host.json`, set
+`FINDEVIL_SIFT_CONFIG`, and keep `SIFT_GUEST_PASSWORD` in the environment:
+
+```powershell
+$env:FINDEVIL_SIFT_CONFIG='config\sift-host.json'
+$env:SIFT_GUEST_PASSWORD='forensics'
+```
+
+Explicit CLI VMX overrides win over `SIFT_VMX_PATH`, environment VM settings
+win over the host config file, and the config file wins over built-in VMware
+defaults. Guest passwords are intentionally rejected from host config files.
+
 Run the local audit primitive tests with:
 
 ```powershell

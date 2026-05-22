@@ -4,6 +4,12 @@
 
 Find Evil SIFT is a constrained case-triage layer for SANS SIFT.
 
+Host VMware settings can be supplied through `FINDEVIL_SIFT_CONFIG` using the
+shape in `config/sift-host.example.json`. The file may name the VMX path, guest
+user, and `vmrun` path, but it must not contain guest passwords or tokens.
+Secrets remain environment-provided so shareable host profiles do not become
+credential bundles.
+
 ## Current Capability
 
 The prototype currently has six evidence lanes plus a host-side correlation

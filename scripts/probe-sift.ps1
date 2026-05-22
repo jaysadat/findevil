@@ -1,13 +1,49 @@
 [CmdletBinding()]
 param(
-    [string]$VmxPath = $(if ($env:SIFT_VMX_PATH) { $env:SIFT_VMX_PATH } else { 'E:\Ollama\SIFT\SIFT.vmx' }),
-    [string]$GuestUser = $(if ($env:SIFT_GUEST_USER) { $env:SIFT_GUEST_USER } else { 'sansforensics' }),
+    [string]$HostConfigPath = $env:FINDEVIL_SIFT_CONFIG,
+    [string]$VmxPath = $env:SIFT_VMX_PATH,
+    [string]$GuestUser = $env:SIFT_GUEST_USER,
     [string]$GuestPassword = $env:SIFT_GUEST_PASSWORD,
-    [string]$VmrunPath = 'C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe'
+    [string]$VmrunPath = $env:VMRUN_PATH
 )
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
+
+$hostConfig = $null
+if (-not [string]::IsNullOrWhiteSpace($HostConfigPath)) {
+    if (-not (Test-Path -LiteralPath $HostConfigPath)) {
+        throw "SIFT host config was not found at '$HostConfigPath'."
+    }
+    $hostConfig = Get-Content -LiteralPath $HostConfigPath -Raw | ConvertFrom-Json
+    if ($hostConfig.sift_vm.PSObject.Properties.Name -contains 'guest_password' -or
+        $hostConfig.sift_vm.PSObject.Properties.Name -contains 'password' -or
+        $hostConfig.sift_vm.PSObject.Properties.Name -contains 'token') {
+        throw 'Keep SIFT guest secrets out of host config and use SIFT_GUEST_PASSWORD.'
+    }
+}
+
+if ([string]::IsNullOrWhiteSpace($VmxPath)) {
+    $VmxPath = if ($hostConfig -and $hostConfig.sift_vm.vmx_path) {
+        $hostConfig.sift_vm.vmx_path
+    } else {
+        'E:\Ollama\SIFT\SIFT.vmx'
+    }
+}
+if ([string]::IsNullOrWhiteSpace($GuestUser)) {
+    $GuestUser = if ($hostConfig -and $hostConfig.sift_vm.guest_user) {
+        $hostConfig.sift_vm.guest_user
+    } else {
+        'sansforensics'
+    }
+}
+if ([string]::IsNullOrWhiteSpace($VmrunPath)) {
+    $VmrunPath = if ($hostConfig -and $hostConfig.sift_vm.vmrun_path) {
+        $hostConfig.sift_vm.vmrun_path
+    } else {
+        'C:\Program Files (x86)\VMware\VMware Workstation\vmrun.exe'
+    }
+}
 
 if (-not (Test-Path -LiteralPath $VmrunPath)) {
     throw "vmrun was not found at '$VmrunPath'."

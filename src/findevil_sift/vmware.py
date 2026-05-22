@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
 from uuid import uuid4
 
+from .config import load_host_config
 from .reports import (
     write_autoruns_report,
     write_disk_report,
@@ -30,16 +31,31 @@ class SiftVmConfig:
     vmrun_path: Path = DEFAULT_VMRUN_PATH
 
     @classmethod
-    def from_environment(cls, vmx_path: str | None = None) -> "SiftVmConfig":
+    def from_environment(
+        cls,
+        vmx_path: str | None = None,
+        host_config_path: str | Path | None = None,
+    ) -> "SiftVmConfig":
         password = os.environ.get("SIFT_GUEST_PASSWORD")
         if not password:
             raise ValueError("Set SIFT_GUEST_PASSWORD before using SIFT guest tools.")
+        host_config = load_host_config(host_config_path).get("sift_vm", {})
 
         return cls(
-            vmx_path=Path(vmx_path or os.environ.get("SIFT_VMX_PATH", DEFAULT_VMX_PATH)),
-            guest_user=os.environ.get("SIFT_GUEST_USER", "sansforensics"),
+            vmx_path=Path(
+                vmx_path
+                or os.environ.get("SIFT_VMX_PATH")
+                or host_config.get("vmx_path", DEFAULT_VMX_PATH)
+            ),
+            guest_user=os.environ.get(
+                "SIFT_GUEST_USER",
+                host_config.get("guest_user", "sansforensics"),
+            ),
             guest_password=password,
-            vmrun_path=Path(os.environ.get("VMRUN_PATH", DEFAULT_VMRUN_PATH)),
+            vmrun_path=Path(
+                os.environ.get("VMRUN_PATH")
+                or host_config.get("vmrun_path", DEFAULT_VMRUN_PATH)
+            ),
         )
 
 
