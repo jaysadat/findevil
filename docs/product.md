@@ -245,6 +245,22 @@ Workflow outputs include:
   into a scenario profile.
 - `executive/executive-report.md` and `executive/executive-summary.json` for
   leadership-facing status, triage signals, caveats, and next actions.
+- `run-manifest.json` at the workflow output root with relative-path SHA-256
+  digests for emitted files and an optional export signature.
+
+Set `FINDEVIL_RUN_MANIFEST_KEY` before `run-case` when a bundle may leave the
+workstation. The workflow adds an HMAC-SHA256 signature to `run-manifest.json`;
+`FINDEVIL_RUN_MANIFEST_KEY_ID` can label the local export key without writing
+the key into a case plan or output bundle. Verify hashes and any signature with:
+
+```powershell
+$env:FINDEVIL_RUN_MANIFEST_KEY='<local-export-key>'
+.\.venv\Scripts\findevil-sift.exe verify-run-manifest `
+  '.\artifacts\sample-case\run-manifest.json'
+```
+
+Unsigned manifests still verify file hashes. Signed manifests fail verification
+until the same signing key is present in the verification environment.
 
 ## MCP Run
 

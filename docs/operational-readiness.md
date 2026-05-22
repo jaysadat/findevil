@@ -14,6 +14,8 @@ unbounded guest shell:
 - Each lane has a narrow operation set and produces structured JSON plus
   preserved raw outputs.
 - Evidence hashes are captured before and after analysis.
+- Workflow bundles emit a run manifest with relative-path SHA-256 digests and
+  optional environment-keyed export signing.
 - The case workflow follows a JSON case plan and validates configured benchmark
   manifests before producing downstream outputs.
 - The R&M scenario profile is data-driven and separated from generic evidence
@@ -57,6 +59,7 @@ dossier for quality control against a known case profile.
   selection policy.
 - Build retrieval on top of cataloged operator references only after guidance
   output stays visibly separate from evidence-backed claims.
-- Add signed run manifests for bundles that leave the workstation.
+- Move run-manifest signing from shared workstation keys to a verifiable
+  asymmetric export-signing profile.
 - Add memory-forensics plugins and broader disk extraction only when preserved
   outputs can support stronger findings than the current quick-response lanes.

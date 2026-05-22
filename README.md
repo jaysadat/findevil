@@ -202,6 +202,16 @@ Plans with an optional labeled claim-accuracy manifest also emit
 `claim-accuracy/claim-accuracy.md` to score promoted, missed, rejected, and
 unsafe claim classes at the review boundary.
 
+Each workflow output root also gets `run-manifest.json` with SHA-256 hashes for
+the exported bundle. Set `FINDEVIL_RUN_MANIFEST_KEY` before a run to add an
+HMAC-SHA256 export signature, then verify hashes and any signature with:
+
+```powershell
+$env:FINDEVIL_RUN_MANIFEST_KEY='<local-export-key>'
+.\.venv\Scripts\findevil-sift.exe verify-run-manifest `
+  '.\artifacts\sample-case\run-manifest.json'
+```
+
 ## Layout
 
 - `docs/` contains product notes, case-plan guidance, and architecture notes.

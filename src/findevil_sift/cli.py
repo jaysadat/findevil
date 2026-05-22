@@ -20,6 +20,7 @@ from .case_plans import (
 )
 from .correlate import correlate_case_summaries, write_case_correlation
 from .knowledge import catalog_knowledge, load_and_validate_knowledge_manifest
+from .run_manifest import signing_key_from_environment, verify_run_manifest
 from .tools import hash_evidence
 from .vmware import (
     SiftVmConfig,
@@ -53,7 +54,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     pcap_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     disk_parser = subparsers.add_parser(
@@ -65,7 +66,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     disk_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     autoruns_parser = subparsers.add_parser(
@@ -77,7 +78,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     autoruns_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     registry_parser = subparsers.add_parser(
@@ -89,7 +90,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     registry_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     userassist_parser = subparsers.add_parser(
@@ -101,7 +102,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     userassist_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     memory_parser = subparsers.add_parser(
@@ -114,7 +115,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     memory_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     validate_parser = subparsers.add_parser(
@@ -212,6 +213,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     catalog_knowledge_parser.add_argument("manifest", type=Path)
     catalog_knowledge_parser.add_argument("--output-dir", type=Path, required=True)
 
+    verify_run_manifest_parser = subparsers.add_parser(
+        "verify-run-manifest",
+        help="Verify workflow bundle hashes and an optional environment-keyed manifest signature.",
+    )
+    verify_run_manifest_parser.add_argument("manifest", type=Path)
+
     discover_parser = subparsers.add_parser(
         "discover-case",
         help="Inventory a SIFT case root and optionally draft a reviewable case plan.",
@@ -224,7 +231,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     discover_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     workflow_parser = subparsers.add_parser(
@@ -237,7 +244,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     workflow_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     rm_workflow_parser = subparsers.add_parser(
@@ -250,7 +257,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     rm_workflow_parser.add_argument(
         "--vmx-path",
         default=None,
-        help="Override SIFT_VMX_PATH or the discovered local default.",
+        help="Override SIFT_VMX_PATH or configured sift_vm.vmx_path.",
     )
 
     args = parser.parse_args(argv)
@@ -393,6 +400,10 @@ def main(argv: Sequence[str] | None = None) -> int:
         result = catalog_knowledge(args.manifest, args.output_dir)
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0
+    if args.command == "verify-run-manifest":
+        result = verify_run_manifest(args.manifest, signing_key=signing_key_from_environment())
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0 if result["passed"] else 1
     if args.command == "discover-case":
         config = SiftVmConfig.from_environment(vmx_path=args.vmx_path)
         result = inventory_guest_case(

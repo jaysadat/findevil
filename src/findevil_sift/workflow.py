@@ -20,6 +20,11 @@ from .correlate import correlate_case_summaries, write_case_correlation
 from .scenario import align_case_profile, write_case_dossier
 from .reports import write_claim_ledger, write_executive_report
 from .quality import write_quality_review
+from .run_manifest import (
+    signing_key_from_environment,
+    signing_key_id_from_environment,
+    write_run_manifest,
+)
 from .vmware import (
     SiftVmConfig,
     triage_guest_autoruns,
@@ -542,10 +547,21 @@ def write_workflow_outputs(trace: dict[str, Any], output_root: Path) -> dict[str
     report_path = output_root / "execution-report.md"
     log_path.write_text(json.dumps(trace, indent=2, sort_keys=True), encoding="utf-8")
     report_path.write_text(render_execution_report(trace), encoding="utf-8")
+    run_manifest = write_run_manifest(
+        output_root,
+        workflow=trace["workflow"],
+        case_id=trace.get("case_id", "unspecified"),
+        case_name=trace.get("case_name", "unspecified"),
+        workflow_status=trace["status"],
+        generated_at=trace["generated_at"],
+        signing_key=signing_key_from_environment(),
+        signing_key_id=signing_key_id_from_environment(),
+    )
     return {
         "status": trace["status"],
         "execution_log": str(log_path),
         "execution_report": str(report_path),
+        "run_manifest": run_manifest,
         **trace["outputs"],
     }
 
