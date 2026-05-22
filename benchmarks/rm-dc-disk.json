@@ -1,0 +1,26 @@
+{
+  "benchmark_id": "rm-dc-disk",
+  "guest_evidence_path": "/cases/R&M/DC/Combined/image.E01",
+  "expected_segment_count": 2,
+  "expected_segment_sha256": {
+    "image.E01": "c0c8fe58dcdb65f6574cb63b34f086856087cfaf06872ed702a4c0c264446bac",
+    "20200918_0347_CDrive.E02": "73f87df9de0fa9ed41c6fdc360f0e15c3d13955e7fd24f5e59a5b2e282d6b384"
+  },
+  "expected_offset_sectors": 718848,
+  "expected_ewf_metadata": {
+    "case_number": "20200918-001",
+    "description": "CITADEL-DC01",
+    "evidence_number": "CITADEL-DC01",
+    "is_corrupted": "yes"
+  },
+  "minimum_artifact_counts": {
+    "amcache": 1,
+    "group_policy_registry": 20,
+    "ntds_database": 1,
+    "ntds_logs": 6,
+    "ntuser_hives": 2,
+    "powershell_paths": 1000,
+    "sysvol_paths": 30
+  }
+}
+

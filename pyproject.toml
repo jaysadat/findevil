@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "findevil-sift"
+version = "0.1.0"
+description = "Evidence-safe building blocks for the Find Evil SIFT lab."
+requires-python = ">=3.12"
+dependencies = ["mcp>=1.0,<2"]
+
+[project.scripts]
+findevil-sift = "findevil_sift.cli:main"
+findevil-sift-mcp = "findevil_sift.mcp_server:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+findevil_sift = ["guest/*.py"]

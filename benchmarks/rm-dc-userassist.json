@@ -1,0 +1,18 @@
+{
+  "benchmark_id": "rm-dc-userassist",
+  "guest_evidence_path": "/cases/R&M/DC/DC01-ProtectedFiles.zip",
+  "expected_sha256": "b1f3d42a9629dc25521685f296959c4c6d36bbf2efd355c127cb49171c372424",
+  "required_hive_members": [
+    "Users/Administrator/NTUSER.DAT",
+    "Users/Default/NTUSER.DAT"
+  ],
+  "minimum_userassist_counts": {
+    "profile_count": 2,
+    "entry_count": 10
+  },
+  "expected_executable_names": [
+    "coreupdater.exe",
+    "cmd.exe",
+    "powershell.exe"
+  ]
+}

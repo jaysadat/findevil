@@ -1,0 +1,25 @@
+{
+  "benchmark_id": "rm-dc-registry",
+  "guest_evidence_path": "/cases/R&M/DC/DC01-ProtectedFiles.zip",
+  "expected_sha256": "b1f3d42a9629dc25521685f296959c4c6d36bbf2efd355c127cb49171c372424",
+  "required_hive_members": [
+    "Protected/software",
+    "Protected/system"
+  ],
+  "minimum_registry_counts": {
+    "run_entry_count": 3,
+    "service_entry_count": 400
+  },
+  "expected_high_signal_entries": [
+    "coreupdate",
+    "coreupdater"
+  ],
+  "expected_decoded_payloads": {
+    "9sEoCawv\\45SVAG2o": [
+      "VirtualAlloc",
+      "CreateThread",
+      "WaitForSingleObject",
+      "FromBase64String"
+    ]
+  }
+}

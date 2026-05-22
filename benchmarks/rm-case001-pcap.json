@@ -1,0 +1,37 @@
+{
+  "benchmark_id": "rm-case001-pcap",
+  "guest_evidence_path": "/cases/R&M/case001-pcap/case001.pcap",
+  "expected_sha256": "09abf49efea1852e047987d92907704d47f36d75f6c8056e2cafa6cc027791cb",
+  "required_logs": [
+    "conn.log",
+    "dns.log",
+    "files.log",
+    "http.log",
+    "notice.log",
+    "rdp.log",
+    "ssl.log"
+  ],
+  "minimum_network_counts": {
+    "connection_count": 30000,
+    "dns_count": 1800,
+    "http_count": 200,
+    "tls_count": 30000
+  },
+  "expected_private_http_hosts": [
+    "o.ss2.us"
+  ],
+  "expected_file_mime_types": [
+    "application/x-dosexec",
+    "application/zip"
+  ],
+  "expected_http_executable_downloads": [
+    {
+      "source": "10.42.85.10",
+      "destination": "194.61.24.102",
+      "uri": "/coreupdater.exe"
+    }
+  ],
+  "expected_ssl_violation_destinations": [
+    "203.78.103.109"
+  ]
+}

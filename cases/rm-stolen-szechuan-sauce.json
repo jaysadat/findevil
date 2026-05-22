@@ -1,0 +1,46 @@
+{
+  "case_id": "rm-stolen-szechuan-sauce",
+  "case_name": "DFIR Madness Case 001 - The Stolen Szechuan Sauce",
+  "description": "Sample case plan used as a regression fixture for the reusable case workflow.",
+  "lanes": {
+    "pcap": {
+      "guest_path": "/cases/R&M/case001-pcap/case001.pcap",
+      "output_dir": "pcap",
+      "benchmark_manifest": "../benchmarks/rm-case001-pcap.json"
+    },
+    "disk": {
+      "guest_path": "/cases/R&M/DC/Combined/image.E01",
+      "output_dir": "dc-disk",
+      "benchmark_manifest": "../benchmarks/rm-dc-disk.json"
+    },
+    "autoruns": {
+      "guest_path": "/cases/R&M/DC/DC01-autorunsc.zip",
+      "output_dir": "dc-autoruns",
+      "benchmark_manifest": "../benchmarks/rm-dc-autoruns.json"
+    },
+    "registry": {
+      "guest_path": "/cases/R&M/DC/DC01-ProtectedFiles.zip",
+      "output_dir": "dc-registry",
+      "benchmark_manifest": "../benchmarks/rm-dc-registry.json"
+    },
+    "userassist": {
+      "guest_path": "/cases/R&M/DC/DC01-ProtectedFiles.zip",
+      "output_dir": "dc-userassist",
+      "benchmark_manifest": "../benchmarks/rm-dc-userassist.json"
+    },
+    "memory": {
+      "guest_path": "/cases/R&M/DC/Combined/citadeldc01.mem",
+      "output_dir": "dc-memory",
+      "terms": [
+        "coreupdater",
+        "194.61.24.102",
+        "203.78.103.109",
+        "9sEoCawv",
+        "45SVAG2o"
+      ],
+      "benchmark_manifest": "../benchmarks/rm-dc-memory.json"
+    }
+  },
+  "scenario_profile": "../benchmarks/rm-stolen-szechuan-sauce-profile.json",
+  "claim_accuracy_manifest": "../benchmarks/rm-stolen-szechuan-sauce-claim-accuracy.json"
+}

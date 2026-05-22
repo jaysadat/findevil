@@ -1,0 +1,15 @@
+{
+  "benchmark_id": "rm-dc-autoruns",
+  "guest_evidence_path": "/cases/R&M/DC/DC01-autorunsc.zip",
+  "expected_sha256": "2855472b2af6d44bfe00cc7a62c3b467b6aa5a138ba6a4af2600a9c5b58c054f",
+  "expected_csv_member": "autorunsc-citadel-dc01.csv",
+  "minimum_autoruns_counts": {
+    "row_count": 900,
+    "enabled_count": 800
+  },
+  "expected_high_signal_entries": [
+    "coreupdater",
+    "ad_driver",
+    "coreupdate"
+  ]
+}

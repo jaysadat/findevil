@@ -1,0 +1,57 @@
+{
+  "profile_id": "rm-stolen-szechuan-sauce",
+  "case_name": "Case 001 - The Stolen Szechuan Sauce",
+  "case_owner": "DFIR Madness",
+  "case_context": [
+    "The case is a training investigation where a sensitive recipe was reported on the dark web.",
+    "The client interview says the files of concern were stored on the Domain Controller file server.",
+    "The published case states the victim network is in the 10.42.x.x space and the incident should be interpreted with Colorado September local time in mind."
+  ],
+  "artifact_roles": [
+    {
+      "artifact": "Case001 PCAP",
+      "role": "Network capture for delivery, callback, topology, RDP, and exfiltration pivots."
+    },
+    {
+      "artifact": "DC01 E01",
+      "role": "Domain Controller disk image for partition metadata and host artifact inventory."
+    },
+    {
+      "artifact": "DC01 Autoruns",
+      "role": "Acquisition-time startup surface that rapidly exposes persistence candidates."
+    },
+    {
+      "artifact": "DC01 Protected Files",
+      "role": "Exported protected hives, user hives, and NTDS material; this workflow uses SOFTWARE and SYSTEM registry hives plus NTUSER UserAssist execution context."
+    },
+    {
+      "artifact": "DC01 memory",
+      "role": "Volatile host evidence used for bounded string corroboration of payload, network, and hidden registry pivots."
+    }
+  ],
+  "expected_payload_download": {
+    "source": "10.42.85.10",
+    "destination": "194.61.24.102",
+    "uri": "/coreupdater.exe"
+  },
+  "expected_callback_violation_destination": "203.78.103.109",
+  "expected_domain_hint": "c137.local",
+  "expected_corroborated_persistence": [
+    "coreupdate",
+    "coreupdater"
+  ],
+  "expected_memory_terms": [
+    "coreupdater",
+    "194.61.24.102",
+    "203.78.103.109",
+    "9sEoCawv",
+    "45SVAG2o"
+  ],
+  "references": [
+    "DFIR Madness case brief",
+    "DFIR Madness PCAP analysis",
+    "DFIR Madness Autoruns analysis",
+    "DFIR Madness memory analysis",
+    "DFIR Madness disk triage analysis"
+  ]
+}

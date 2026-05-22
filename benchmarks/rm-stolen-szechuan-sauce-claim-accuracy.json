@@ -1,0 +1,18 @@
+{
+  "accuracy_id": "rm-stolen-szechuan-sauce-claim-review",
+  "description": "Labeled regression expectations for the generic claim promotion review.",
+  "expected_promoted_claim_types": [
+    "domain_hint_match",
+    "persistence_corroboration",
+    "userassist_execution_corroboration"
+  ],
+  "expected_blocked_claim_types": [
+    "dc_network_pivot",
+    "autoruns_persistence_pivot",
+    "memory_string_pivot"
+  ],
+  "forbidden_promoted_statuses": [
+    "candidate",
+    "volatile_pivot"
+  ]
+}
