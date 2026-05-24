@@ -75,3 +75,23 @@ The example fixture expects the selected SANS memory and SIFT cheat sheets from
 `knowledge/corpus.example.json`. Evaluation checks whether expected relative
 source paths appear within each bounded query result; it measures retrieval
 coverage, not forensic truth.
+
+## Draft Planning
+
+After an index is approved and evaluated, guidance can write a review-only
+planning artifact:
+
+```powershell
+.\.venv\Scripts\findevil-sift.exe draft-guidance-plan `
+  '.\knowledge\indexes\operator-dfir-guidance\knowledge-index.json' `
+  --case-id 'acme-incident' `
+  --case-name 'ACME Incident' `
+  --context 'memory process persistence review for suspect.exe and network pivots' `
+  --output-dir '.\artifacts\acme-guidance-plan'
+```
+
+The output is `guidance-plan-draft.json` and `guidance-plan-draft.md`. It can
+suggest lanes, possible memory terms, and next actions, but it is deliberately
+not a case plan and does not write into `cases/`. An analyst must review
+evidence inventory, author or edit a case plan, and run `validate-case-plan`
+before any SIFT workflow run.

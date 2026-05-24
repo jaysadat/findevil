@@ -81,7 +81,9 @@ They are guidance for plans and next actions, not evidence support for findings.
 Use `index-knowledge` and `query-knowledge` after cataloging when a bounded
 local guidance search is useful; query hits stay labeled separately from case
 evidence outputs. `validate-knowledge-guidance` checks approved indexes against
-expected-hit fixtures before guidance is used for automation.
+expected-hit fixtures before guidance is used for automation. `draft-guidance-plan`
+writes a review-only planning artifact; it does not create executable case
+plans.
 
 The first constrained local tool is a read-only evidence hash operation:
 

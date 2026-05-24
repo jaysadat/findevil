@@ -16,6 +16,8 @@ unbounded guest shell:
   lexical guidance retrieval that preserves source hashes and locations.
 - Operator policy can constrain queried guidance indexes, and expected-hit
   evaluation fixtures score approved retrieval coverage.
+- Guidance retrieval can write review-only planning drafts without creating or
+  modifying executable case plans.
 - Case plans are validated before VMware guest work begins.
 - Each lane has a narrow operation set and produces structured JSON plus
   preserved raw outputs.
@@ -63,8 +65,8 @@ dossier for quality control against a known case profile.
 
 - Extend operator policy from output-root and signing controls into retention
   and profile-selection policy.
-- Add a reviewed guidance-to-case-plan drafting boundary with evaluation
-  coverage before retrieval suggests workflow inputs.
+- Add analyst approval tooling that converts reviewed guidance drafts into
+  explicit case-plan edits with validation and traceability.
 - Move run-manifest signing from shared workstation keys to a verifiable
   asymmetric export-signing profile.
 - Add memory-forensics plugins and broader disk extraction only when preserved

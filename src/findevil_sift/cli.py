@@ -19,6 +19,7 @@ from .case_plans import (
     write_discovered_case_plan,
 )
 from .correlate import correlate_case_summaries, write_case_correlation
+from .guidance_planning import draft_guidance_plan
 from .knowledge import (
     catalog_knowledge,
     index_knowledge,
@@ -243,6 +244,17 @@ def main(argv: Sequence[str] | None = None) -> int:
     validate_guidance_parser.add_argument("manifest", type=Path)
     validate_guidance_parser.add_argument("--output", type=Path)
 
+    draft_guidance_plan_parser = subparsers.add_parser(
+        "draft-guidance-plan",
+        help="Write a review-only lane and next-action draft from approved guidance retrieval.",
+    )
+    draft_guidance_plan_parser.add_argument("index", type=Path)
+    draft_guidance_plan_parser.add_argument("--case-id", required=True)
+    draft_guidance_plan_parser.add_argument("--case-name", required=True)
+    draft_guidance_plan_parser.add_argument("--context", required=True)
+    draft_guidance_plan_parser.add_argument("--output-dir", type=Path, required=True)
+    draft_guidance_plan_parser.add_argument("--limit", type=int, default=5)
+
     verify_run_manifest_parser = subparsers.add_parser(
         "verify-run-manifest",
         help="Verify workflow bundle hashes and an optional environment-keyed manifest signature.",
@@ -450,6 +462,17 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.output.write_text(json.dumps(result, indent=2, sort_keys=True), encoding="utf-8")
         print(json.dumps(result, indent=2, sort_keys=True))
         return 0 if result["passed"] else 1
+    if args.command == "draft-guidance-plan":
+        result = draft_guidance_plan(
+            index_path=args.index,
+            case_id=args.case_id,
+            case_name=args.case_name,
+            case_context=args.context,
+            output_dir=args.output_dir,
+            limit=args.limit,
+        )
+        print(json.dumps(result, indent=2, sort_keys=True))
+        return 0
     if args.command == "verify-run-manifest":
         result = verify_run_manifest(args.manifest, signing_key=signing_key_from_environment())
         print(json.dumps(result, indent=2, sort_keys=True))

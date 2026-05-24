@@ -24,7 +24,9 @@ knowledge manifest described in `docs/knowledge-corpus.md`. Those sources are
 guidance inputs for future plan or next-action assistance, not evidence inputs
 for reports or claim promotion. A bounded lexical index can consume the
 catalog, re-check source hashes before extraction, and return labeled guidance
-chunks for analyst review without entering claim promotion.
+chunks for analyst review without entering claim promotion. Guidance can also
+write a review-only planning draft with suggested lanes and next actions, but
+it does not create or modify executable case plans.
 
 ## Current Capability
 
