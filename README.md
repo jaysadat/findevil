@@ -190,6 +190,18 @@ That script writes `live-demo-manifest.json` with the draft plan, correction
 execution log, full-case execution log, executive report, and claim-accuracy
 report paths.
 
+For the Devpost submission bundle, use:
+
+```powershell
+$env:FINDEVIL_RUN_MANIFEST_KEY='<local-export-key>'
+.\scripts\run-submission-package.ps1 `
+  -OutputRoot '.\artifacts\submission-package-final'
+```
+
+The submission package wraps the live demo path, verifies signed run manifests,
+optionally includes guidance evaluation/draft artifacts, and writes
+`submission-summary.json` plus `submission-summary.md`.
+
 During a time-boxed recording, use the quick real-case correction path and
 show the prepared full-case manifest outputs afterward:
 

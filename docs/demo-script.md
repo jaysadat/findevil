@@ -51,21 +51,24 @@ Prepare the full recording artifact set before the time-boxed capture:
 
 ```powershell
 $env:SIFT_GUEST_PASSWORD='<guest-password>'
-.\scripts\run-rm-live-demo.ps1 -OutputRoot '.\artifacts\rm-live-demo'
+$env:FINDEVIL_RUN_MANIFEST_KEY='<local-export-key>'
+.\scripts\run-submission-package.ps1 `
+  -OutputRoot '.\artifacts\submission-package-final'
 ```
 
 That driver preserves discovery output, the correction run, the benchmarked
-full case run, and `live-demo-manifest.json` with the report and log paths to
-open during narration.
+full case run, run-manifest verification, optional guidance review, and
+`submission-summary.json` with the report and log paths to open during
+narration.
 
 For the live five-minute capture, run the short real-case correction path:
 
 ```powershell
 $env:SIFT_GUEST_PASSWORD='<guest-password>'
-.\scripts\run-rm-live-demo.ps1 `
-  -OutputRoot '.\artifacts\rm-live-correction' `
-  -QuickCorrection `
-  -CorrectionOnly
+$env:FINDEVIL_RUN_MANIFEST_KEY='<local-export-key>'
+.\scripts\run-submission-package.ps1 `
+  -OutputRoot '.\artifacts\submission-package-recording' `
+  -QuickCorrectionOnly
 ```
 
 The quick path discovers the real case, derives a memory review plan from the
